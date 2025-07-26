@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register - TB Prediction System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --medical-primary: #059669;
+            --medical-primary-light: #10b981;
+            --medical-primary-dark: #047857;
+            --medical-light: #d1fae5;
+            --medical-subtle: #ecfdf5;
+            --text-primary: #064e3b;
+            --text-secondary: #065f46;
+            --background: #f0fdf4;
+            --white: #ffffff;
+            --border-color: #a7f3d0;
+            --shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(5, 150, 105, 0.15);
+            --medical-red: #dc2626;
+            --medical-orange: #ea580c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, var(--medical-subtle) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--medical-light);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .medical-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--medical-primary), var(--medical-primary-light));
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 0px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: var(--white);
+            color: var(--text-primary);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--medical-primary);
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.1);
+            background: var(--medical-subtle);
+        }
+
+        .password-strength {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .strength-weak { color: var(--medical-red); }
+        .strength-medium { color: var(--medical-orange); }
+        .strength-strong { color: var(--medical-primary); }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--medical-primary), var(--medical-primary-light));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border-left: 4px solid;
+            display: none;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            color: var(--medical-primary-dark);
+            border-color: var(--medical-primary);
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            color: #991b1b;
+            border-color: var(--medical-red);
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .links a {
+            color: var(--medical-primary);
+            text-decoration: none;
+            font-size: 14px;
+            margin: 0 10px;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .required {
+            color: var(--medical-red);
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .register-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <h1>Create Account</h1>
+        </div>
+
+        <div id="alertContainer"></div>
+
+        <form id="registerForm" onsubmit="handleRegister(event)">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="firstName">First Name <span class="required">*</span></label>
+                    <input type="text" id="firstName" name="first_name" required placeholder="Enter first name">
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName">Last Name <span class="required">*</span></label>
+                    <input type="text" id="lastName" name="last_name" required placeholder="Enter last name">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username <span class="required">*</span></label>
+                <input type="text" id="username" name="username" required placeholder="Choose a username" minlength="3">
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="password">Password <span class="required">*</span></label>
+                    <input type="password" id="password" name="password" required placeholder="Create password" minlength="8" onkeyup="checkPasswordStrength()">
+                    <div id="passwordStrength" class="password-strength"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password <span class="required">*</span></label>
+                    <input type="password" id="confirmPassword" name="confirm_password" required placeholder="Confirm password" onkeyup="checkPasswordMatch()">
+                    <div id="passwordMatch" class="password-strength"></div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn" id="submitBtn"> Create Account</button>
+        </form>
+
+        <div class="divider">or</div>
+
+        <div class="links">
+            <a href="/login">Already have an account? Login</a>
+        </div>
+    </div>
+
+    <script>
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strengthDiv = document.getElementById('passwordStrength');
+            
+            if (password.length === 0) {
+                strengthDiv.textContent = '';
+                return;
+            }
+            
+            let strength = 0;
+            if (password.length >= 6) strength++;
+            if (password.match(/[a-z]/)) strength++;
+            if (password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            
+            if (strength < 3) {
+                strengthDiv.textContent = 'Weak password';
+                strengthDiv.className = 'password-strength strength-weak';
+            } else if (strength < 4) {
+                strengthDiv.textContent = 'Medium strength';
+                strengthDiv.className = 'password-strength strength-medium';
+            } else {
+                strengthDiv.textContent = 'Strong password';
+                strengthDiv.className = 'password-strength strength-strong';
+            }
+        }
+
+        function checkPasswordMatch() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const matchDiv = document.getElementById('passwordMatch');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (confirmPassword.length === 0) {
+                matchDiv.textContent = '';
+                submitBtn.disabled = false;
+                return;
+            }
+            
+            if (password === confirmPassword) {
+                matchDiv.textContent = '✓ Passwords match';
+                matchDiv.className = 'password-strength strength-strong';
+                submitBtn.disabled = false;
+            } else {
+                matchDiv.textContent = '✗ Passwords do not match';
+                matchDiv.className = 'password-strength strength-weak';
+                submitBtn.disabled = true;
+            }
+        }
+
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            
+            // Check if passwords match
+            if (formData.get('password') !== formData.get('confirm_password')) {
+                showAlert('Passwords do not match!', 'danger');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // Check content-type before parsing as JSON
+                const contentType = response.headers.get('content-type') || '';
+
+                // If 302 or 200 with non-JSON, treat as success
+                if (response.status === 302 || (response.status === 200 && !contentType.includes('application/json'))) {
+                    showAlert('Registration successful! Redirecting to login...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                    return;
+                }
+
+                // Only try to parse JSON if content-type is JSON
+                if (contentType.includes('application/json')) {
+                    const result = await response.json();
+                    if (result.success) {
+                        showAlert('Registration successful! Redirecting to login...', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/login';
+                        }, 2000);
+                    } else {
+                        showAlert(result.message || 'Registration failed. Please try again.', 'danger');
+                    }
+                } else {
+                    showAlert('Registration successful! Redirecting to login...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                }
+            } catch (error) {
+                showAlert('Network or server error. Please try again.', 'danger');
+            }
+        }
+    </script>
+</body>
+</html>

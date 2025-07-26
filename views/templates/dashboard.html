@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TB or not TB Prediction Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --medical-primary: #059669;
+            --medical-primary-light: #10b981;
+            --medical-primary-dark: #047857;
+            --medical-light: #d1fae5;
+            --medical-subtle: #ecfdf5;
+            --text-primary: #064e3b;
+            --text-secondary: #065f46;
+            --background: #f0fdf4;
+            --white: #ffffff;
+            --border-color: #a7f3d0;
+            --shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(5, 150, 105, 0.15);
+            --medical-red: #dc2626;
+            --medical-orange: #ea580c;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, var(--medical-subtle) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            margin: 0;
+        }
+        .main-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            padding: 40px 30px 30px 30px;
+        }
+        .header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--medical-primary), var(--medical-primary-light));
+            color: white;
+            border-radius: 12px;
+            padding: 18px 24px;
+            margin-bottom: 32px;
+        }
+        .header-bar .logo {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header-bar .logout-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-left: 12px;
+        }
+        .header-bar .logout-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        .nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 32px;
+            justify-content: center;
+        }
+        .nav button {
+            padding: 12px 24px;
+            background: var(--medical-subtle);
+            border: 2px solid var(--medical-primary);
+            border-radius: 8px;
+            color: var(--medical-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav button.active, .nav button:hover {
+            background: var(--medical-primary);
+            color: white;
+        }
+        .section { display: none; }
+        .section.active { display: block; }
+        .dashboard-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0 40px 0;
+        }
+        .stat-card {
+            background: var(--medical-subtle);
+            border: 1.5px solid var(--medical-light);
+            border-radius: 10px;
+            padding: 18px 32px;
+            text-align: center;
+            min-width: 120px;
+        }
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--medical-primary);
+        }
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+        .dashboard-card {
+            background: var(--medical-subtle);
+            border: 1.5px solid var(--medical-light);
+            border-radius: 10px;
+            padding: 18px 12px;
+            text-align: center;
+        }
+        .dashboard-card .icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: var(--medical-primary);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        @media (max-width: 900px) {
+            .main-container { padding: 18px 6px; }
+            .dashboard-cards { grid-template-columns: 1fr; }
+            .dashboard-stats { flex-direction: column; gap: 18px; }
+            .header-bar { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header-bar">
+            <div class="logo">TB or not TB Dashboard</div>
+            <nav style="margin-left:auto; display:flex;" aria-label="Main navigation">
+                <a href="/med_form" class="logout-btn" role="button">Medical Form</a>
+                <a href="/logout" class="logout-btn" role="button">Logout</a>
+            </nav>
+        </div>
+        <div class="nav">
+            <button class="active" onclick="showSection('overview', this)">Overview</button>
+            <button onclick="showSection('visuals', this)">Visualizations</button>
+            <button onclick="showSection('models', this)">Model Analytics</button>
+        </div>
+        <!-- Overview Section -->
+        <div id="overview" class="section active">
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total Patients</div>
+                    <div class="stat-value" id="totalPatients">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">TB Cases</div>
+                    <div class="stat-value" id="tbCases">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Model Accuracy</div>
+                    <div class="stat-value" id="accuracy">-</div>
+                </div>
+            </div>
+        </div>
+        <!-- TB Prediction Section -->
+        <div id="predict" class="section">
+            <h2>TB Risk Prediction</h2>
+            <p>Start a new TB risk assessment for a patient. (Form or tool goes here.)</p>
+        </div>
+        <!-- Patient Management Section -->
+        <div id="patients" class="section">
+            <h2>Patient Management</h2>
+            <p>View, add, and manage patient records. (Table or management UI goes here.)</p>
+        </div>
+        <!-- Visualizations Section -->
+        <div id="visuals" class="section">
+            <h2>Data Visualizations</h2>
+            <p>Charts and insights from your TB data. (Charts go here.)</p>
+        </div>
+        <!-- Model Analytics Section -->
+        <div id="models" class="section">
+            <h2>Model Analytics</h2>
+            <p>Review the performance and accuracy of the AI models. (Metrics and charts go here.)</p>
+        </div>
+        <div class="footer">
+            Built with Flask, MySQL & Advanced ML Models
+        </div>
+    </div>
+    <script>
+        function showSection(id, btn) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+    </script>
+</body>
+</html>

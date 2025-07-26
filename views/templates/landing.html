@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TB Prediction System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --medical-primary: #059669;
+            --medical-primary-light: #10b981;
+            --medical-primary-dark: #047857;
+            --medical-light: #d1fae5;
+            --medical-subtle: #ecfdf5;
+            --text-primary: #064e3b;
+            --text-secondary: #065f46;
+            --background: #f0fdf4;
+            --white: #ffffff;
+            --border-color: #a7f3d0;
+            --shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(5, 150, 105, 0.15);
+            --medical-red: #dc2626;
+            --medical-orange: #ea580c;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--background) 0%, var(--medical-subtle) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            margin: 0;
+        }
+        .main-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            padding: 40px 30px 30px 30px;
+        }
+        .header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, var(--medical-primary), var(--medical-primary-light));
+            color: white;
+            border-radius: 12px;
+            padding: 18px 24px;
+            margin-bottom: 32px;
+        }
+        .header-bar .logo {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .header-bar .logout-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .header-bar .logout-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        .medical-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--medical-primary), var(--medical-primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            margin: 0 auto 18px auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--medical-primary);
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 18px;
+        }
+        .cta-section {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 16px;
+            margin: 32px 0 24px 0;
+        }
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--medical-primary), var(--medical-primary-light));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--medical-primary-dark), var(--medical-primary));
+        }
+        .btn:hover {
+            background: var(--medical-primary-dark);
+        }
+        .warning-notice {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-left: 4px solid var(--medical-orange);
+            padding: 16px;
+            border-radius: 8px;
+            margin: 30px 0;
+            color: #92400e;
+            font-size: 14px;
+        }
+        .features {
+            margin: 40px 0 0 0;
+        }
+        .features h2 {
+            text-align: center;
+            color: var(--medical-primary);
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+        .features-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+        .feature-card {
+            background: var(--medical-subtle);
+            border: 1.5px solid var(--medical-light);
+            border-radius: 10px;
+            padding: 18px 12px;
+            text-align: center;
+        }
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: var(--medical-primary);
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        @media (max-width: 600px) {
+            .main-container { padding: 18px 6px; }
+            .features-list { grid-template-columns: 1fr; }
+            .header-bar { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header-bar">
+            <div class="logo"> TB or not TB</div>
+            <a href="/logout" class="logout-btn">Logout</a>
+        </div>
+        <h1>TB or not TB  Prediction System</h1>
+        <div class="subtitle">ML-Powered Tuberculosis Probability Assessment</div>
+        <div class="warning-notice">
+            <strong>⚠️ Medical Disclaimer:</strong> This system is for preliminary assessment only. Results should not replace professional medical diagnosis. Please consult a healthcare provider for proper medical evaluation and treatment.
+        </div>
+        <div class="cta-section">
+            <a href="/med_form" class="btn">Start Medical Assessment</a>
+            <a href="/dashboard" class="btn btn-secondary">View Dashboard</a>
+        </div>
+        <div class="footer">
+            Built with Flask, MySQL & Advanced ML Models
+        </div>
+    </div>
+</body>
+</html>
