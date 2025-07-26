@@ -6,5 +6,5 @@ class TBView:
         return render_template('tb_list.html', medforms=medforms)
     
     @staticmethod
-    def render_medical_form_result(tb_result, tb_probability):
-        return render_template('results.html', result=tb_result, probability=tb_probability)
+    def render_medical_form_result(tb_result):
+        return render_template('results.html', result=tb_result)

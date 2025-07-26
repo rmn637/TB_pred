@@ -57,20 +57,20 @@ def med_form():
 @app.route('/submit_medical_form', methods=['POST'])
 @login_required
 def submit_medical_form():
-    response =  TBController.submit_medical_form()
+    response = tb_controller.submit_medical_form()
     if response[1] == 200 and request.content_type != 'application/json':
         return redirect(url_for('result'))
     return response
 
-@app.route('/result_<int:form_id>', methods=['GET'])
+@app.route('/result', methods=['GET'])
 @login_required
 def result(form_id):
-    return TBController.render_medical_form_result(form_id)
+    return tb_controller.render_medical_form_result(form_id)
 
 @app.route('/medform_list', methods=['GET'])
 @login_required
 def medform_list():
-    return TBController.list_medforms()
+    return tb_controller.list_medforms()
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

@@ -226,16 +226,29 @@
                     body: formData
                 });
 
-                // Check content-type before parsing as JSON
                 const contentType = response.headers.get('content-type') || '';
-                
-                if (response.status === 302 || (response.status === 200 && !contentType.includes('application/json'))) {
+
+                if (response.status === 401) {
+                    showAlert('Login failed. Please check your credentials.', 'danger');
+                } else if (response.status === 403) {
+                    showAlert('Access denied.', 'danger');
+                } else if (response.status === 302 || (response.status === 200 && !contentType.includes('application/json'))) {
                     showAlert('Login successful! Redirecting...', 'success');
                     setTimeout(() => {
                         window.location.href = '/';
                     }, 1500);
+                } else if (contentType.includes('application/json')) {
+                    const result = await response.json();
+                    if (result.success) {
+                        showAlert('Login successful! Redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 1500);
+                    } else {
+                        showAlert(result.message || 'Login failed. Please check your credentials.', 'danger');
+                    }
                 } else {
-                    showAlert(result.message || 'Login failed. Please check your credentials.', 'danger');
+                    showAlert('Login failed. Please check your credentials.', 'danger');
                 }
             } catch (error) {
                 showAlert('Network error. Please try again.', 'danger');

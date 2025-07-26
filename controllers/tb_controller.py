@@ -32,3 +32,10 @@ class TBController:
             return render_template('tb_list.html', medforms=medforms)
         except Exception as e:
             return f"Error: {str(e)}", 500
+        
+    def render_medical_form_result(self, form_id):
+        try:
+            tb_result = self.tb_model.get_medical_form_result(form_id)
+            return render_template('results.html', result=tb_result)
+        except Exception as e:
+            return f"Error: {str(e)}", 500

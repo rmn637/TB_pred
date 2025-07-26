@@ -1,8 +1,11 @@
 import pickle
 from .database.connection import DatabaseConnection
 from mysql.connector import Error
+from .interfaces.tb_model_interface import TBInterface
+import numpy as np
+from .predictive_models.activation_functions import ActivationFunctions
 
-class TBModel:
+class TBModel(TBInterface):
     def __init__(self, db_config, model_path='models/predictive_model/random_forest.pkl'):
         self.db_connection = DatabaseConnection(
             host=db_config['host'],
@@ -10,48 +13,59 @@ class TBModel:
             password=db_config['password'],
             database=db_config['database']
         )
-        # Load ML model
-        with open(model_path, 'rb') as f:
-            self.model = pickle.load(f)
+        # Load custom neural network model
+        with open('models/predictive_models/custom_neural_net.pkl', 'rb') as f:
+            self.custom_model_nn = pickle.load(f)
+        # Extract weights and biases
+        self.weights_input_h1 = self.custom_model_nn["weights_input_h1"]
+        self.bias_h1 = self.custom_model_nn["bias_h1"]
+        self.weights_h1_h2 = self.custom_model_nn["weights_h1_h2"]
+        self.bias_h2 = self.custom_model_nn["bias_h2"]
+        self.weights_h2_h3 = self.custom_model_nn["weights_h2_h3"]
+        self.bias_h3 = self.custom_model_nn["bias_h3"]
+        self.weights_h3_output = self.custom_model_nn["weights_h3_output"]
+        self.bias_output = self.custom_model_nn["bias_output"]
 
     def insert_medform(self, medform_data):
         """
         Insert a new medical form record into the tb_assessments table.
         medform_data: dict with keys matching the table columns (except 'id').
+        After insertion, predict tuberculosis using the custom neural network.
         """
         connection = self.db_connection.get_connection()
         if not connection:
-            return False, "Database connection failed"
+            return False, "Database connection failed", None, None
         try:
             cursor = connection.cursor()
-            # Exclude 'id' if present (auto-increment)
-            if 'id' in medform_data:
-                medform_data = {k: v for k, v in medform_data.items() if k != 'id'}
+            medform_data = {k: (v if v not in [None, ''] else 0) for k, v in medform_data.items()}
+            feature_keys = [k for k in medform_data.keys() if k not in ['id', 'tuberculosis']]
+            features = [int(medform_data[k]) if str(medform_data[k]).isdigit() else 0 for k in feature_keys]
+
+            # Predict using custom neural network
+            tb_pred = self.custom_nn_predict(features)
+            medform_data['tuberculosis'] = int(tb_pred[0])
+
+            # Prepare SQL query
             columns = ', '.join(medform_data.keys())
             placeholders = ', '.join(['%s'] * len(medform_data))
+            print(columns, placeholders)  # Debugging line
             query = f"INSERT INTO tb_assessments ({columns}) VALUES ({placeholders})"
             cursor.execute(query, tuple(medform_data.values()))
             connection.commit()
             cursor.close()
             connection.close()
+
             return True, "Medical form inserted successfully"
         except Error as e:
-            return False, f"Database error: {str(e)}"
+            return False, f"Database error: {str(e)}", None, None
 
-    def predict_tb(self, features):
-        """
-        Predict TB risk using the loaded ML model.
-        features: list or array of input features in the correct order.
-        Returns: prediction (e.g., 0/1 or probability)
-        """
-        try:
-            prediction = self.model.predict([features])
-            if hasattr(self.model, "predict_proba"):
-                proba = self.model.predict_proba([features])
-                return int(prediction[0]), float(proba[0][1])
-            return int(prediction[0]), None
-        except Exception as e:
-            return None, f"Prediction error: {str(e)}"
+    def custom_nn_predict(self, X):
+        X = np.array(X, dtype=float)
+        h1 = ActivationFunctions.relu(np.dot(X, self.weights_input_h1) + self.bias_h1)
+        h2 = ActivationFunctions.leaky_relu(np.dot(h1, self.weights_h1_h2) + self.bias_h2)
+        h3 = ActivationFunctions.sigmoid(np.dot(h2, self.weights_h2_h3) + self.bias_h3)
+        output = ActivationFunctions.sigmoid(np.dot(h3, self.weights_h3_output) + self.bias_output)
+        return (output > 0.5).astype(int)
 
     def view_all_medforms(self):
         """
@@ -63,10 +77,7 @@ class TBModel:
             return []
         try:
             cursor = connection.cursor(dictionary=True)
-            query = ("SELECT id, patient_id, assessment_date, cough, cough_days, colds, colds_days, fever, fever_days, "
-                     "bleeding, dob, loc, chest_pain, body_joint_pain, abdominal_pain, back_pain, nape_pain, "
-                     "sore_throat, dizziness, loss_appetite, wounds, eent, allergies, vomiting, gender, final_age, "
-                     "results, tb_probability FROM tb_assessments")
+            query = ("SELECT * FROM tb_assessments")
             cursor.execute(query)
             results = cursor.fetchall()
             cursor.close()
@@ -74,3 +85,26 @@ class TBModel:
             return results
         except Error:
             return []
+        
+    def get_medical_form_result(self, form_id):
+        """
+        Retrieve a specific medical form result by ID.
+        Returns: dict with form data and TB prediction probability.
+        """
+        connection = self.db_connection.get_connection()
+        if not connection:
+            return {}, 0.0
+        try:
+            cursor = connection.cursor(dictionary=True)
+            query = "SELECT * FROM tb_assessments WHERE id = %s"
+            cursor.execute(query, (form_id,))
+            result = cursor.fetchone()
+            cursor.close()
+            connection.close()
+            if result:
+                features = [result[key] for key in result if key not in ['id', 'results', 'tb_probability']]
+                _, tb_probability = self.predict_tb(features)
+                return result, tb_probability
+            return {}, 0.0
+        except Error as e:
+            return {}, 0.0

@@ -419,8 +419,26 @@
                 }
             });
             if (isValid) {
-                alert('Medical assessment submitted successfully!');
-                // this.submit(); // Uncomment to actually submit
+                try{
+                    const formData = new FormData(this);
+                    fetch('/submit_medical_form', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Medical assessment submitted successfully!');
+                        } else {
+                            alert('Error submitting form: ' + (data.error || data.message || 'Unknown error'));
+                        }
+                    })
+                    .catch(error => {
+                        alert('Error submitting form: ' + error.message);
+                    });
+                } catch (error) {
+                    alert('Error submitting form: ' + error.message);
+                }
             } else {
                 alert('Please fill in all required fields.');
             }
