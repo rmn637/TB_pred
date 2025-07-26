@@ -3,6 +3,8 @@
 <head>
     <title>Medical Assessment Form</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='myca.css') }}">
     <style>
         :root {
             --medical-primary: #059669;
@@ -400,6 +402,17 @@
             </div>
         </form>
     </div>
+    <button id="myca-button"><i class="fa-regular fa-comment"></i></button>
+
+    <div id="myca-chatbox">
+        <div id="chat-messages" style="display: flex; flex-direction: column;"></div>
+        <div id="chat-input">
+            <input type="text" id="user-message" placeholder="Ask a question about TB..." />
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='myca.js') }}"></script>
     <script>
         document.getElementById('medicalForm').addEventListener('submit', function(e) {
             e.preventDefault();

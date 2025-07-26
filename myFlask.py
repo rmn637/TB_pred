@@ -1,12 +1,19 @@
-from flask import Flask, jsonify, session, redirect, url_for, request
+from flask import Flask, jsonify, session, redirect, url_for, request, render_template
 from flask_cors import CORS
 import os
+import google.generativeai as genai
 from functools import wraps
 from controllers.student_controller import StudentController
 from controllers.account_controller import AccountController
 from controllers.tb_controller import TBController
 
-app = Flask(__name__, template_folder='views/templates')
+base_dir = os.path.abspath(os.path.dirname(__file__))
+
+app = Flask(
+    __name__,
+    static_folder=os.path.join(base_dir, 'views', 'static'),
+    template_folder=os.path.join(base_dir, 'views', 'templates')
+)
 app.secret_key = os.urandom(24)
 
 # Configure CORS to allow credentials (sessions)
@@ -24,7 +31,36 @@ student_controller = StudentController(DB_CONFIG)
 account_controller = AccountController(DB_CONFIG)
 tb_controller = TBController(DB_CONFIG)
 
+# Myca Support chat Section
+genai.configure(api_key="AIzaSyAKyJ2d22a5FOBxNje6Tixb1lISiLAkbpg")
+model = genai.GenerativeModel("gemini-2.5-flash")
 
+# Ai contents + personality
+system_prompt = """
+You are Myca, a virtual assistant designed to support medical professionals—specifically doctors—by providing accurate, concise, and context-aware information related to tuberculosis (TB). Your role is to assist clinicians by offering summaries of current guidelines, treatment protocols, diagnostic tips, and patient communication strategies related to TB.
+You respond in a professional and efficient tone—clear, informative, and respectful of the doctor's expertise. You do not explain basic medical concepts unless asked. Assume the user is a trained clinician and focus on enhancing their workflow and decision-making.
+If asked about symptoms, medications, diagnostics, or treatment approaches, respond with evidence-informed summaries. When referring to guidelines, prioritize authoritative sources like the WHO, CDC, or national TB programs. Do not speculate on patient-specific outcomes or suggest off-label treatments.
+Avoid unnecessary pleasantries or emotional language. Focus on being a reliable, fast, and helpful tool in a clinical environment.
+
+Tone and behavior guidelines:
+- Professional and efficient
+- Concise and medically accurate
+- Assumes the user is a licensed healthcare provider
+- Offers support tools, suggestions, and summaries—not direct patient care or prescriptions
+- Always defer final judgment to the clinician
+"""
+
+@app.route("/myca-chat", methods=["POST"])
+def chat():
+    user_input = request.json.get("message", "")
+    convo = model.start_chat(history=[
+        {"role": "user", "parts": system_prompt},
+        {"role": "user", "parts": user_input}
+    ])
+    response = convo.send_message(user_input)
+    return jsonify({"reply": response.text})
+
+# Start
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):

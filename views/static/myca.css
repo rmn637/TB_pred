@@ -1,0 +1,120 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+#myca-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background-color: #059669;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 28px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+  z-index: 9999;
+}
+
+#myca-button:hover {
+  background-color: #056345;
+}
+
+#myca-chatbox {
+  position: fixed;
+  bottom: 100px;
+  right: 26px;
+  width: 320px;
+  height: 420px;
+  background: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+#chat-messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+
+#chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+#chat-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#chat-messages::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 3px;
+  border: none;
+}
+
+#chat-messages::-webkit-scrollbar-button {
+  display: none;
+}
+
+.message {
+  max-width: 80%;
+  margin: 6px 0;
+  padding: 10px 12px;
+  border-radius: 15px;
+  text-align: justify;
+  word-wrap: break-word;
+  white-space: pre-line;
+}
+
+.user-message {
+  background-color: #bbf2e1;
+  align-self: flex-end;
+  text-align: left;
+  border-bottom-right-radius: 0;
+}
+
+.bot-message {
+  background-color: #f1f1f1;
+  align-self: flex-start;
+  text-align: left;
+  border-bottom-left-radius: 0;
+}
+
+#chat-input {
+  display: flex;
+  border-top: 1px solid #ccc;
+}
+
+#chat-input input {
+  flex: 1;
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  outline: none;
+}
+
+#chat-input button {
+  background: #059669;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-weight: 500;
+}
