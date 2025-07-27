@@ -4,7 +4,7 @@ class AccountView:
     @staticmethod
     def login_success_response():
         """Return success response for AJAX or redirect for form submission"""
-        return jsonify({'message': 'Login successful!', 'success': True, 'redirect': '/'}), 200
+        return jsonify({'message': 'Login successful!', 'success': True}), 200
     
     @staticmethod
     def login_failed_response():

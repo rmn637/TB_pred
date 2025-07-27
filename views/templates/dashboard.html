@@ -116,6 +116,23 @@
             font-weight: 700;
             color: var(--medical-primary);
         }
+        .dashboard-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: center;
+            margin: 40px 0 0 0;
+        }
+        .dashboard-images img {
+            background: #f8fafc;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(5,150,105,0.07);
+            max-width: 320px;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            padding: 10px;
+        }
         .dashboard-cards {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -145,21 +162,42 @@
             .dashboard-stats { flex-direction: column; gap: 18px; }
             .header-bar { flex-direction: column; gap: 10px; }
         }
+        .add-pred-btn {
+            display: block;
+            width: 20%;
+            margin: 0 auto 18px auto;
+            padding: 13px 0;
+            background: #10b981;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.08rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.18s;
+            align-self: center;
+            text-align: center;
+        }
+        .add-pred-btn:hover, .add-pred-btn:focus {
+            background: #059669;
+        }
     </style>
 </head>
 <body>
     <div class="main-container">
         <div class="header-bar">
-            <div class="logo">TB or not TB Dashboard</div>
+            <div class="logo">Dashboard</div>
             <nav style="margin-left:auto; display:flex;" aria-label="Main navigation">
-                <a href="/med_form" class="logout-btn" role="button">Medical Form</a>
                 <a href="/logout" class="logout-btn" role="button">Logout</a>
             </nav>
         </div>
+        <a href="/med_form" class="add-pred-btn">Fill up Medical Form</a>
         <div class="nav">
             <button class="active" onclick="showSection('overview', this)">Overview</button>
             <button onclick="showSection('visuals', this)">Visualizations</button>
             <button onclick="showSection('models', this)">Model Analytics</button>
+            <button onclick="showSection('datasets', this)">Dataset Analytics</button>
         </div>
         <!-- Overview Section -->
         <div id="overview" class="section active">
@@ -178,11 +216,6 @@
                 </div>
             </div>
         </div>
-        <!-- TB Prediction Section -->
-        <div id="predict" class="section">
-            <h2>TB Risk Prediction</h2>
-            <p>Start a new TB risk assessment for a patient. (Form or tool goes here.)</p>
-        </div>
         <!-- Patient Management Section -->
         <div id="patients" class="section">
             <h2>Patient Management</h2>
@@ -197,7 +230,22 @@
         <div id="models" class="section">
             <h2>Model Analytics</h2>
             <p>Review the performance and accuracy of the AI models. (Metrics and charts go here.)</p>
+            <h2>Model Performance</h2>
+            <div class="dashboard-images">
+                <img src="{{ url_for('static', filename='images/ConfusionMatrix.png') }}" alt="Confusion Matrix">
+                <img src="{{ url_for('static', filename='images/ROCCurve.png') }}" alt="ROC Curve">
+            </div>
         </div>
+        <!-- Dataset Analytics Section -->
+        <div id="datasets" class="section">
+            <h2>Dataset Analytics</h2>
+            <div class="dashboard-images">
+                <img src="{{ url_for('static', filename='images/ClassDistribution.png') }}" alt="Class Distribution">
+                <img src="{{ url_for('static', filename='images/CorrelationMatrix.png') }}" alt="Correlation Matrix">
+                <img src="{{ url_for('static', filename='images/InformationGainRanking.png') }}" alt="Information Gain Ranking">
+            </div>
+        </div>
+        
         <div class="footer">
             Built with Flask, MySQL & Advanced ML Models
         </div>

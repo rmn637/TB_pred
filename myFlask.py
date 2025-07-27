@@ -6,6 +6,7 @@ from functools import wraps
 from controllers.student_controller import StudentController
 from controllers.account_controller import AccountController
 from controllers.tb_controller import TBController
+from views.tb_view import TBView
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
 
@@ -14,7 +15,7 @@ app = Flask(
     static_folder=os.path.join(base_dir, 'views', 'static'),
     template_folder=os.path.join(base_dir, 'views', 'templates')
 )
-app.secret_key = os.urandom(24)
+app.secret_key = "your-very-secret-development-key"
 
 # Configure CORS to allow credentials (sessions)
 CORS(app, supports_credentials=True, origins=["http://localhost:1234", "http://127.0.0.1:1234"])
@@ -73,56 +74,23 @@ def login_required(f):
 @app.route('/')
 def home():
     from views.student_view import StudentView
-    # Check if user is logged in, if not redirect to login
-    if 'user_id' not in session or not session.get('logged_in'):
-        return redirect(url_for('login'))
     return StudentView.render_landing()
-
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    from views.student_view import StudentView
-    return StudentView.render_dashboard()
-
-@app.route('/med_form')
-@login_required
-def med_form():
-    from views.student_view import StudentView
-    return StudentView.render_med_form()
-
-@app.route('/submit_medical_form', methods=['POST'])
-@login_required
-def submit_medical_form():
-    response = tb_controller.submit_medical_form()
-    if response[1] == 200 and request.content_type != 'application/json':
-        return redirect(url_for('result'))
-    return response
-
-@app.route('/result', methods=['GET'])
-@login_required
-def result(form_id):
-    return tb_controller.render_medical_form_result(form_id)
-
-@app.route('/medform_list', methods=['GET'])
-@login_required
-def medform_list():
-    return tb_controller.list_medforms()
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     from views.account_view import AccountView
     
-    # If already logged in, redirect to home
-    if 'user_id' in session and session.get('logged_in'):
-        return redirect(url_for('home'))
-    
     if request.method == 'POST':
         # Handle login POST request
         response = account_controller.login_user()
-        # If login was successful and it's a form submission, redirect
-        if response[1] == 200 and request.content_type != 'application/json':
-            return redirect(url_for('home'))
+
+        if response[1] == 200 or response[1] == 302:
+            return redirect(url_for('dashboard'))
         return response
+    
+    # If already logged in, redirect to dashboard
+    if 'user_id' in session and session.get('logged_in'):
+        return redirect(url_for('dashboard'))
     
     return AccountView.render_login()
 
@@ -144,6 +112,37 @@ def register():
 def logout():
     session.clear()
     return redirect(url_for('login'))
+
+@app.route('/dashboard', methods=['GET'])
+def dashboard():
+    if 'user_id' not in session or not session.get('logged_in'):
+        return redirect(url_for('login'))
+    from views.student_view import StudentView
+    return StudentView.render_dashboard()
+
+@app.route('/med_form')
+@login_required
+def med_form():
+    from views.student_view import StudentView
+    return StudentView.render_med_form()
+
+@app.route('/submit_medical_form', methods=['POST'])
+@login_required
+def submit_medical_form():
+    response = tb_controller.submit_medical_form()
+    return response[0]
+
+@app.route('/result', methods=['GET'])
+@login_required
+def result():
+    result = request.args.get('result')
+    from views.tb_view import TBView
+    return TBView.render_medical_form_result(tb_result=result)
+
+@app.route('/medform_list', methods=['GET'])
+@login_required
+def medform_list():
+    return tb_controller.list_medforms()
 
 @app.route('/health', methods=['GET'])
 def health_check():

@@ -7,4 +7,4 @@ class TBView:
     
     @staticmethod
     def render_medical_form_result(tb_result):
-        return render_template('results.html', result=tb_result)
+        return render_template('result.html', result=tb_result)

@@ -441,13 +441,16 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            alert('Medical assessment submitted successfully!');
+                            alert(data.message || 'Medical assessment submitted successfully!');
+                            setTimeout(() => {
+                                window.location.href = "/result?result=" + encodeURIComponent(data.result);
+                            }, 1500);
                         } else {
-                            alert('Error submitting form: ' + (data.error || data.message || 'Unknown error'));
+                            alert('Error form: ' + (data.message || 'Unknown error'));
                         }
                     })
                     .catch(error => {
-                        alert('Error submitting form: ' + error.message);
+                        alert('Error submitting: ' + error.message);
                     });
                 } catch (error) {
                     alert('Error submitting form: ' + error.message);

@@ -6,7 +6,7 @@ import numpy as np
 from .predictive_models.activation_functions import ActivationFunctions
 
 class TBModel(TBInterface):
-    def __init__(self, db_config, model_path='models/predictive_model/random_forest.pkl'):
+    def __init__(self, db_config):
         self.db_connection = DatabaseConnection(
             host=db_config['host'],
             user=db_config['user'],
@@ -48,14 +48,13 @@ class TBModel(TBInterface):
             # Prepare SQL query
             columns = ', '.join(medform_data.keys())
             placeholders = ', '.join(['%s'] * len(medform_data))
-            print(columns, placeholders)  # Debugging line
             query = f"INSERT INTO tb_assessments ({columns}) VALUES ({placeholders})"
             cursor.execute(query, tuple(medform_data.values()))
             connection.commit()
             cursor.close()
             connection.close()
 
-            return True, "Medical form inserted successfully"
+            return True, "Medical form inserted successfully. TB prediction made.", int(tb_pred[0])
         except Error as e:
             return False, f"Database error: {str(e)}", None, None
 

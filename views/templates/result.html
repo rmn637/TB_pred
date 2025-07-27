@@ -164,23 +164,18 @@
         <div class="result-section">
             <div class="result-title">Assessment Result</div>
             <div class="result-value">
-                <!-- Example: -->
                 {% if result %}
-                    {{ result }}
+                    {% if result == "1" %}
+                        Has TB
+                    {% elif result == "0" %}
+                        No TB Detected
+                    {% else %}
+                        {{ result }}
+                    {% endif %}
                 {% else %}
                     No result available.
                 {% endif %}
             </div>
-            <div class="result-detail">
-                {% if probability %}
-                    Probability of TB: <strong>{{ probability }}%</strong>
-                {% endif %}
-            </div>
-        </div>
-        <div class="nav-btns">
-            <a href="/med_form" class="btn">Back to Medical Form</a>
-            <a href="/dashboard" class="btn">Go to Dashboard</a>
-            <a href="/logout" class="btn btn-logout">Logout</a>
         </div>
     </div>
     <button id="myca-button"><i class="fa-regular fa-comment"></i></button>

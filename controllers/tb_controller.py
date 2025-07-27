@@ -18,9 +18,9 @@ class TBController:
             ]
             medform_data = {field: data.get(field) for field in fields}
             # Insert into DB
-            success, message = self.tb_model.insert_medform(medform_data)
+            success, message, result = self.tb_model.insert_medform(medform_data)
             if success:
-                return jsonify({'success': True, 'message': message}), 200
+                return jsonify({'success': True, 'message': message, 'result': result}), 200
             else:
                 return jsonify({'success': False, 'message': message}), 400
         except Exception as e:
