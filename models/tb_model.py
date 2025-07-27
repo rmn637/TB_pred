@@ -4,6 +4,7 @@ from mysql.connector import Error
 from .interfaces.tb_model_interface import TBInterface
 import numpy as np
 from .predictive_models.activation_functions import ActivationFunctions
+from sklearn.preprocessing import StandardScaler
 
 class TBModel(TBInterface):
     def __init__(self, db_config):
@@ -43,6 +44,7 @@ class TBModel(TBInterface):
 
             # Predict using custom neural network
             tb_pred = self.custom_nn_predict(features)
+            print(tb_pred)
             medform_data['tuberculosis'] = int(tb_pred[0])
 
             # Prepare SQL query
@@ -59,12 +61,23 @@ class TBModel(TBInterface):
             return False, f"Database error: {str(e)}", None, None
 
     def custom_nn_predict(self, X):
-        X = np.array(X, dtype=float)
-        h1 = ActivationFunctions.relu(np.dot(X, self.weights_input_h1) + self.bias_h1)
-        h2 = ActivationFunctions.leaky_relu(np.dot(h1, self.weights_h1_h2) + self.bias_h2)
-        h3 = ActivationFunctions.sigmoid(np.dot(h2, self.weights_h2_h3) + self.bias_h3)
-        output = ActivationFunctions.sigmoid(np.dot(h3, self.weights_h3_output) + self.bias_output)
-        return (output > 0.5).astype(int)
+        X = np.array(X, dtype=float).reshape(1, -1)
+        scaler = StandardScaler()
+        X = scaler.fit_transform(X)
+        h1_input = np.dot(X, self.weights_input_h1) + self.bias_h1
+        h1_output = ActivationFunctions.relu(h1_input)
+
+        h2_input = np.dot(h1_output, self.weights_h1_h2) + self.bias_h2
+        h2_output = ActivationFunctions.leaky_relu(h2_input)
+
+        h3_input = np.dot(h2_output, self.weights_h2_h3) + self.bias_h3
+        h3_output = ActivationFunctions.sigmoid(h3_input)
+
+        final_input = np.dot(h3_output, self.weights_h3_output) + self.bias_output
+        predicted_output = ActivationFunctions.sigmoid(final_input)
+        print(predicted_output)
+        print((predicted_output > 0.5).astype(int))
+        return (predicted_output > 0.5).astype(int)
 
     def view_all_medforms(self):
         """

@@ -126,6 +126,8 @@
             padding: 40px 40px 30px 40px;
             display: flex;
             flex-direction: column;
+            overflow-y: auto;
+            max-height: 100vh;
         }
         .add-pred-btn {
             display: block;
@@ -348,7 +350,7 @@
             <div class="nav">
                 <button class="active" onclick="showSection('overview', this)">Overview</button>
                 <button onclick="showSection('visuals', this)">Visualizations</button>
-                <button onclick="showSection('models', this)">Model Analytics</button>
+                <button onclick="showSection('models', this)">Model Performance</button>
                 <button onclick="showSection('datasets', this)">Dataset Analytics</button>
             </div>
             <a href="/logout" class="logout-btn" role="button">Logout</a>
@@ -378,12 +380,49 @@
             </div>
             <!-- Model Analytics Section -->
             <div id="models" class="section">
-                <h2>Model Analytics</h2>
-                <p>Review the performance and accuracy of the AI models. (Metrics and charts go here.)</p>
                 <h2>Model Performance</h2>
                 <div class="dashboard-images">
                     <img src="{{ url_for('static', filename='images/ConfusionMatrix.png') }}" alt="Confusion Matrix">
                     <img src="{{ url_for('static', filename='images/ROCCurve.png') }}" alt="ROC Curve">
+                    <div style="margin-bottom:32px;">
+                        <h3>Classification Report</h3>
+                        <table style="width:100%; max-width:520px; margin:18px 0; border-collapse:collapse; font-size:1rem;">
+                            <thead>
+                                <tr style="background:var(--medical-light); color:var(--text-primary);">
+                                    <th style="padding:8px 12px; text-align:left;">Class</th>
+                                    <th style="padding:8px 12px; text-align:right;">Precision</th>
+                                    <th style="padding:8px 12px; text-align:right;">Recall</th>
+                                    <th style="padding:8px 12px; text-align:right;">F1-score</th>
+                                    <th style="padding:8px 12px; text-align:right;">Support</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td style="padding:6px 12px;">0 (No TB)</td><td style="padding:6px 12px; text-align:right;">0.80</td><td style="padding:6px 12px; text-align:right;">0.76</td><td style="padding:6px 12px; text-align:right;">0.78</td><td style="padding:6px 12px; text-align:right;">70</td></tr>
+                                <tr><td style="padding:6px 12px;">1 (Has TB)</td><td style="padding:6px 12px; text-align:right;">0.61</td><td style="padding:6px 12px; text-align:right;">0.68</td><td style="padding:6px 12px; text-align:right;">0.64</td><td style="padding:6px 12px; text-align:right;">40</td></tr>
+                                <tr style="background:var(--medical-light); font-weight:600;">
+                                    <td style="padding:6px 12px;">Accuracy</td>
+                                    <td colspan="4" style="padding:6px 12px; text-align:right;">0.73 (110 samples)</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:6px 12px;">Macro avg</td>
+                                    <td style="padding:6px 12px; text-align:right;">0.71</td>
+                                    <td style="padding:6px 12px; text-align:right;">0.72</td>
+                                    <td style="padding:6px 12px; text-align:right;">0.71</td>
+                                    <td style="padding:6px 12px; text-align:right;">110</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:6px 12px;">Weighted avg</td>
+                                    <td style="padding:6px 12px; text-align:right;">0.73</td>
+                                    <td style="padding:6px 12px; text-align:right;">0.73</td>
+                                    <td style="padding:6px 12px; text-align:right;">0.73</td>
+                                    <td style="padding:6px 12px; text-align:right;">110</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="max-width:600px; color:var(--text-secondary); font-size:1rem;">
+                            <strong>Interpretation:</strong> The model achieves an overall accuracy of <b>73%</b>. For patients without TB (class 0), the model is more precise and has a higher F1-score than for those with TB (class 1). The recall for class 1 (0.68) means the model correctly identifies 68% of actual TB cases, but may miss some. The macro and weighted averages summarize performance across both classes. This report helps you understand the model's strengths and where it may need improvement, especially in detecting TB-positive cases.
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- Dataset Analytics Section -->
@@ -393,6 +432,32 @@
                     <img src="{{ url_for('static', filename='images/ClassDistribution.png') }}" alt="Class Distribution">
                     <img src="{{ url_for('static', filename='images/CorrelationMatrix.png') }}" alt="Correlation Matrix">
                     <img src="{{ url_for('static', filename='images/InformationGainRanking.png') }}" alt="Information Gain Ranking">
+                    <div style="margin-bottom:32px;">
+                        <h3>Top Features by Information Gain</h3>
+                        <table style="width:100%; max-width:420px; margin:18px 0; border-collapse:collapse; font-size:1rem;">
+                            <thead>
+                                <tr style="background:var(--medical-light); color:var(--text-primary);">
+                                    <th style="padding:8px 12px; text-align:left;">Feature</th>
+                                    <th style="padding:8px 12px; text-align:right;">Mutual Information</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td style="padding:6px 12px;">age</td><td style="padding:6px 12px; text-align:right;">0.156</td></tr>
+                                <tr><td style="padding:6px 12px;">coughdur</td><td style="padding:6px 12px; text-align:right;">0.113</td></tr>
+                                <tr><td style="padding:6px 12px;">cough</td><td style="padding:6px 12px; text-align:right;">0.072</td></tr>
+                                <tr><td style="padding:6px 12px;">colddur</td><td style="padding:6px 12px; text-align:right;">0.033</td></tr>
+                                <tr><td style="padding:6px 12px;">feverdur</td><td style="padding:6px 12px; text-align:right;">0.022</td></tr>
+                                <tr><td style="padding:6px 12px;">dob</td><td style="padding:6px 12px; text-align:right;">0.014</td></tr>
+                                <tr><td style="padding:6px 12px;">sputum</td><td style="padding:6px 12px; text-align:right;">0.014</td></tr>
+                                <tr><td style="padding:6px 12px;">backpain</td><td style="padding:6px 12px; text-align:right;">0.009</td></tr>
+                                <tr><td style="padding:6px 12px;">jointpain</td><td style="padding:6px 12px; text-align:right;">0.009</td></tr>
+                                <tr><td style="padding:6px 12px;">chestpain</td><td style="padding:6px 12px; text-align:right;">0.008</td></tr>
+                            </tbody>
+                        </table>
+                        <div style="max-width:600px; color:var(--text-secondary); font-size:1rem;">
+                            <strong>Explanation:</strong> Information gain (mutual information) measures how much knowing a feature reduces uncertainty about the TB diagnosis. Features with higher values (like <b>age</b> and <b>cough duration</b>) are more informative for the model’s predictions. This ranking helps identify which patient data points are most important for accurate TB risk assessment.
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="footer">
