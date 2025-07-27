@@ -145,34 +145,49 @@
             color: #991b1b;
             border-color: var(--medical-red);
         }
-
         .links {
             text-align: center;
             margin-top: 20px;
         }
-
         .links a {
             color: var(--medical-primary);
             text-decoration: none;
             font-size: 14px;
             margin: 0 10px;
         }
-
         .links a:hover {
             text-decoration: underline;
         }
-
         .divider {
             text-align: center;
             margin: 20px 0;
             color: var(--text-secondary);
             font-size: 14px;
         }
+        .icon-circle {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--medical-primary), var(--medical-primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px auto;
+            box-shadow: 0 4px 16px 0 rgba(5,150,105,0.10);
+        }
+        .icon-circle i {
+            color: #fff;
+            font-size: 2rem;
+        }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
 </head>
 <body>
     <div class="login-container">
         <div class="login-header">
+            <div class="icon-circle">
+                <i class="fa-solid fa-lungs"></i>
+            </div>
             <h1>Login</h1>
         </div>
 

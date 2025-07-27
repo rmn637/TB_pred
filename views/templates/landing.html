@@ -8,14 +8,18 @@
     <style>
         :root {
             --medical-primary: #059669;
+            --medical-primary-light: #10b981;
+            --medical-primary-dark: #047857;
             --background: #f0fdf4;
             --white: #fff;
             --text-primary: #064e3b;
             --text-secondary: #065f46;
+            --shadow-lg: 0 10px 24px 0 rgba(5,150,105,0.13);
+            --gradient: linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
         }
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--background);
+            background: var(--gradient);
             color: var(--text-primary);
             margin: 0;
             min-height: 100vh;
@@ -25,43 +29,66 @@
         }
         .card {
             background: var(--white);
-            border-radius: 16px;
-            box-shadow: 0 6px 24px rgba(5,150,105,0.08);
-            padding: 44px 32px 36px 32px;
-            max-width: 340px;
+            border-radius: 22px;
+            box-shadow: var(--shadow-lg);
+            padding: 56px 36px 44px 36px;
+            max-width: 370px;
             width: 100%;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
         .logo {
-            font-size: 2rem;
-            font-weight: 700;
+            font-size: 2.2rem;
+            font-weight: 800;
             color: var(--medical-primary);
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+            margin-bottom: 12px;
+            letter-spacing: 1.5px;
+            z-index: 1;
+            position: relative;
+        }
+        .icon-circle {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--medical-primary), var(--medical-primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px auto;
+            box-shadow: 0 4px 16px 0 rgba(5,150,105,0.10);
+        }
+        .icon-circle i {
+            color: #fff;
+            font-size: 2rem;
         }
         .subtitle {
-            font-size: 1.05rem;
+            font-size: 1.13rem;
             color: var(--text-secondary);
-            margin-bottom: 32px;
+            margin-bottom: 36px;
             font-weight: 400;
+            z-index: 1;
+            position: relative;
         }
         .cta-btn {
             display: block;
             width: 100%;
-            padding: 14px 0;
-            background: var(--medical-primary);
+            padding: 15px 0;
+            background: linear-gradient(135deg, var(--medical-primary), var(--medical-primary-light));
             color: var(--white);
             border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            border-radius: 10px;
+            font-size: 1.13rem;
+            font-weight: 700;
             cursor: pointer;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             text-decoration: none;
-            transition: background 0.18s;
+            transition: background 0.18s, box-shadow 0.18s;
+            box-shadow: 0 2px 8px 0 rgba(5,150,105,0.08);
         }
         .cta-btn:hover, .cta-btn:focus {
-            background: #047857;
+            background: var(--medical-primary-dark);
+            box-shadow: 0 4px 16px 0 rgba(5,150,105,0.13);
         }
         .secondary-link {
             display: block;
@@ -70,26 +97,34 @@
             text-decoration: none;
             margin-top: 4px;
             transition: color 0.18s;
+            font-weight: 600;
         }
         .secondary-link:hover, .secondary-link:focus {
             color: #047857;
         }
         .disclaimer {
-            font-size: 0.92rem;
+            font-size: 0.97rem;
             color: #888;
-            margin-top: 30px;
+            margin-top: 34px;
             line-height: 1.5;
+            z-index: 1;
+            position: relative;
         }
         @media (max-width: 500px) {
             .card {
                 padding: 28px 8px 22px 8px;
             }
+            .logo { font-size: 1.5rem; }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
 </head>
 <body>
     <div class="card">
-        <div class="logo">TB Assessment</div>
+        <div class="icon-circle">
+            <i class="fa-solid fa-lungs"></i>
+        </div>
+        <div class="logo">Neuro-TB</div>
         <div class="subtitle">
             Instantly assess your risk for tuberculosis.<br>
             Fast, private, and secure.

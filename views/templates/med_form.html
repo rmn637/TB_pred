@@ -29,45 +29,92 @@
             margin: 0;
         }
         .main-container {
-            max-width: 700px;
-            margin: 40px auto;
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
             background: var(--white);
-            border-radius: 16px;
-            box-shadow: var(--shadow-lg);
-            padding: 40px 30px 30px 30px;
-        }
-        .header-bar {
+            border-radius: 0;
+            box-shadow: none;
+            padding: 0;
             display: flex;
-            align-items: auto;
-            justify-content: space-between;
-            background: linear-gradient(135deg, var(--medical-primary), var(--medical-primary-light));
-            color: white;
-            border-radius: 12px;
-            padding: 18px 24px;
-            margin-bottom: 32px;
+            min-height: 100vh;
         }
-        .header-bar .logo {
+        .sidebar {
+            width: 220px;
+            background: var(--medical-subtle);
+            border-right: 1.5px solid var(--medical-light);
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            padding: 32px 0 32px 0;
+            gap: 24px;
+        }
+        .sidebar .logo {
             font-size: 28px;
             font-weight: 700;
             letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            color: var(--medical-primary);
+            text-align: center;
+            margin-bottom: 18px;
         }
-        .header-bar .logout-btn {
-            background: rgba(255,255,255,0.15);
-            border: none;
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: stretch;
+            margin: 0 18px;
+        }
+        .sidebar-nav a {
+            padding: 14px 0;
+            background: var(--medical-subtle);
+            border: 2px solid var(--medical-primary);
+            border-radius: 8px;
+            color: var(--medical-primary);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s;
+            margin-bottom: 4px;
+        }
+        .sidebar-nav a.active, .sidebar-nav a:hover {
+            background: var(--medical-primary);
             color: white;
-            padding: 10px 22px;
+        }
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: stretch;
+            margin: 0 18px;
+        }
+        .nav a.logout-btn {
+            background: rgba(5,150,105,0.12);
+            border: none;
+            color: var(--medical-primary);
+            padding: 10px 0;
             border-radius: 8px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
-            margin-left: 12px;
+            margin: 0 0 8px 0;
+            transition: background 0.2s, color 0.2s;
+            text-align: center;
+            text-decoration: none;
+            border: 2px solid var(--medical-primary);
         }
-        .header-bar .logout-btn:hover {
-            background: rgba(255,255,255,0.25);;
+        .nav a.logout-btn:hover {
+            background: var(--medical-primary);
+            color: white;
+        }
+        .content-area {
+            flex: 1;
+            padding: 40px 40px 30px 40px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
         }
         h1 {
             text-align: center;
@@ -200,207 +247,275 @@
         .required {
             color: var(--medical-red);
         }
-        @media (max-width: 768px) {
-            .main-container { padding: 18px 6px; }
-            .form-row { grid-template-columns: 1fr; }
-            .checkbox-group { grid-template-columns: 1fr; }
-            .header-bar { flex-direction: column; gap: 10px; }
+        .icon-circle {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--medical-primary), var(--medical-primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px auto;
+            box-shadow: 0 4px 16px 0 rgba(5,150,105,0.10);
+        }
+        .icon-circle i {
+            color: #fff;
+            font-size: 2rem;
+        }
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+                width: 100vw;
+                height: auto;
+                min-height: 100vh;
+            }
+            .sidebar {
+                flex-direction: row;
+                width: 100vw;
+                height: auto;
+                border-radius: 0;
+                border-right: none;
+                border-bottom: 1.5px solid var(--medical-light);
+                padding: 12px 0;
+                gap: 10px;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .sidebar .logo {
+                margin-bottom: 0;
+                font-size: 22px;
+                padding-left: 12px;
+            }
+            .sidebar-nav {
+                flex-direction: row;
+                margin: 0 8px;
+                gap: 6px;
+            }
+            .sidebar-nav a {
+                width: 80%;
+                font-size: 0.95rem;
+                padding: 10px 8px;
+            }
+            .logout-btn {
+                margin: 0 8px 0 0;
+                padding: 10px 8px;
+                font-size: 0.95rem;
+            }
+            .content-area {
+                padding: 16px 4vw 16px 4vw;
+            }
+        }
+        @media (max-width: 600px) {
+            .content-area {
+                padding: 8px 2vw 8px 2vw;
+            }
+            .sidebar .logo {
+                font-size: 18px;
+                padding-left: 4px;
+            }
+            .form-section {
+                padding: 10px;
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
 </head>
 <body>
     <div class="main-container">
-        <div class="header-bar">
-            <div class="logo">TB or not TB Medical Form</div>
-            <div style="margin-left:auto; display:flex;">
-                <a href="/dashboard" class="logout-btn">Dashboard</a>
-                <a href="/logout" class="logout-btn">Logout</a>
+        <aside class="sidebar">
+            <div class="icon-circle">
+                <i class="fa-solid fa-lungs"></i>
             </div>
+            <div class="logo">Neuro-TB</div>
+            <nav class="nav" aria-label="Main navigation">
+                <a href="/dashboard" class="logout-btn" role="button">Dashboard</a>
+                <a href="/logout" class="logout-btn" role="button">Logout</a>
+            </nav>
+        </aside>
+        <div class="content-area">
+            <h1>Medical Assessment Form</h1>
+            <div class="subtitle">Complete health evaluation and symptom tracking</div>
+            <form id="medicalForm" action="/submit_medical_form" method="POST">
+                <!-- Patient Info -->
+                <fieldset class="form-section">
+                    <legend class="section-title">Patient Information</legend>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Gender <span class="required">*</span></label>
+                            <select name="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Age <span class="required">*</span></label>
+                            <input type="number" name="age" min="0" max="150" required placeholder="Enter age">
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Primary Symptoms -->
+                <fieldset class="form-section">
+                    <legend class="section-title">Primary Symptoms</legend>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cough <span class="required">*</span></label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" id="cough_yes" name="cough" value="1" required>
+                                    <label for="cough_yes">Yes</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="cough_no" name="cough" value="0" required>
+                                    <label for="cough_no">No</label>
+                                </div>
+                            </div>
+                            <label>Duration (days)</label>
+                            <input type="number" name="coughdur" min="0" max="365" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Colds <span class="required">*</span></label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" id="cold_yes" name="cold" value="1" required>
+                                    <label for="cold_yes">Yes</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="cold_no" name="cold" value="0" required>
+                                    <label for="cold_no">No</label>
+                                </div>
+                            </div>
+                            <label>Duration (days)</label>
+                            <input type="number" name="colddur" min="0" max="365" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Fever <span class="required">*</span></label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" id="fever_yes" name="fever" value="1" required>
+                                    <label for="fever_yes">Yes</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="fever_no" name="fever" value="0" required>
+                                    <label for="fever_no">No</label>
+                                </div>
+                            </div>
+                            <label>Duration (days)</label>
+                            <input type="number" name="feverdur" min="0" max="365" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Difficulty of Breathing (DOB) <span class="required">*</span></label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" id="dob_yes" name="dob" value="1" required>
+                                    <label for="dob_yes">Yes</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="dob_no" name="dob" value="0" required>
+                                    <label for="dob_no">No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Other Symptoms -->
+                <fieldset class="form-section">
+                    <legend class="section-title">Other Symptoms (Check all that apply)</legend>
+                    <div class="checkbox-group">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="sputum" name="sputum" value="1">
+                            <label for="sputum">Sputum Production</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="dizziness" name="dizziness" value="1">
+                            <label for="dizziness">Dizziness</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="chestpain" name="chestpain" value="1">
+                            <label for="chestpain">Chest Pain</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="jointpain" name="jointpain" value="1">
+                            <label for="jointpain">Joint Pain</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="napepain" name="napepain" value="1">
+                            <label for="napepain">Nape Pain</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="backpain" name="backpain" value="1">
+                            <label for="backpain">Back Pain</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="lossap" name="lossap" value="1">
+                            <label for="lossap">Loss of Appetite</label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Systemic and Other Conditions -->
+                <fieldset class="form-section">
+                    <legend class="section-title">Systemic and Other Conditions (Check all that apply)</legend>
+                    <div class="checkbox-group">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="circulatory_system" name="circulatory_system" value="1">
+                            <label for="circulatory_system">Circulatory System Disease</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="digestive_system" name="digestive_system" value="1">
+                            <label for="digestive_system">Digestive System Disease</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="endocrine" name="endocrine" value="1">
+                            <label for="endocrine">Endocrine Disorder</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="eye_and_adnexa" name="eye_and_adnexa" value="1">
+                            <label for="eye_and_adnexa">Eye and Adnexa Disease</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="genitourinary_system" name="genitourinary_system" value="1">
+                            <label for="genitourinary_system">Genitourinary System Disease</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="infectious_and_parasitic" name="infectious_and_parasitic" value="1">
+                            <label for="infectious_and_parasitic">Infectious/Parasitic Disease</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="mental" name="mental" value="1">
+                            <label for="mental">Mental Health Condition</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="musculoskeletal_system" name="musculoskeletal_system" value="1">
+                            <label for="musculoskeletal_system">Musculoskeletal System Disease</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="nervous_system" name="nervous_system" value="1">
+                            <label for="nervous_system">Nervous System Disease</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="pregnancy" name="pregnancy" value="1">
+                            <label for="pregnancy">Pregnancy</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="respiratory_system" name="respiratory_system" value="1">
+                            <label for="respiratory_system">Respiratory System Disease</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="skin" name="skin" value="1">
+                            <label for="skin">Skin Disease</label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="submit-section">
+                    <button type="submit" class="btn-submit">Submit Medical Assessment</button>
+                    <button type="reset" class="btn-reset">Reset Form</button>
+                </div>
+            </form>
         </div>
-        <h1>Medical Assessment Form</h1>
-        <div class="subtitle">Complete health evaluation and symptom tracking</div>
-        <form id="medicalForm" action="/submit_medical_form" method="POST">
-            <!-- Patient Info -->
-            <div class="form-section">
-                <div class="section-title">Patient Information</div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Gender <span class="required">*</span></label>
-                        <select name="gender" required>
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Age <span class="required">*</span></label>
-                        <input type="number" name="age" min="0" max="150" required placeholder="Enter age">
-                    </div>
-                </div>
-            </div>
-            <!-- Primary Symptoms -->
-            <div class="form-section">
-                <div class="section-title">Primary Symptoms</div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Cough <span class="required">*</span></label>
-                        <div class="radio-group">
-                            <div class="radio-option">
-                                <input type="radio" id="cough_yes" name="cough" value="1" required>
-                                <label for="cough_yes">Yes</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" id="cough_no" name="cough" value="0" required>
-                                <label for="cough_no">No</label>
-                            </div>
-                        </div>
-                        <label>Duration (days)</label>
-                        <input type="number" name="coughdur" min="0" max="365" placeholder="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Colds <span class="required">*</span></label>
-                        <div class="radio-group">
-                            <div class="radio-option">
-                                <input type="radio" id="cold_yes" name="cold" value="1" required>
-                                <label for="cold_yes">Yes</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" id="cold_no" name="cold" value="0" required>
-                                <label for="cold_no">No</label>
-                            </div>
-                        </div>
-                        <label>Duration (days)</label>
-                        <input type="number" name="colddur" min="0" max="365" placeholder="0">
-                    </div>
-                    <div class="form-group">
-                        <label>Fever <span class="required">*</span></label>
-                        <div class="radio-group">
-                            <div class="radio-option">
-                                <input type="radio" id="fever_yes" name="fever" value="1" required>
-                                <label for="fever_yes">Yes</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" id="fever_no" name="fever" value="0" required>
-                                <label for="fever_no">No</label>
-                            </div>
-                        </div>
-                        <label>Duration (days)</label>
-                        <input type="number" name="feverdur" min="0" max="365" placeholder="0">
-                    </div>
-                </div>
-            </div>
-            <!-- Difficulty of Breathing -->
-            <div class="form-section">
-                <div class="section-title">Difficulty of Breathing (DOB)</div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>DOB <span class="required">*</span></label>
-                        <div class="radio-group">
-                            <div class="radio-option">
-                                <input type="radio" id="dob_yes" name="dob" value="1" required>
-                                <label for="dob_yes">Yes</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" id="dob_no" name="dob" value="0" required>
-                                <label for="dob_no">No</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Other Binary Symptoms -->
-            <div class="form-section">
-                <div class="section-title">Other Symptoms</div>
-                <div class="checkbox-group">
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="sputum" name="sputum" value="1">
-                        <label for="sputum">Sputum</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="dizziness" name="dizziness" value="1">
-                        <label for="dizziness">Dizziness</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="chestpain" name="chestpain" value="1">
-                        <label for="chestpain">Chest Pain</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="jointpain" name="jointpain" value="1">
-                        <label for="jointpain">Joint Pain</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="napepain" name="napepain" value="1">
-                        <label for="napepain">Nape Pain</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="backpain" name="backpain" value="1">
-                        <label for="backpain">Back Pain</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="lossap" name="lossap" value="1">
-                        <label for="lossap">Loss of Appetite</label>
-                    </div>
-                </div>
-            </div>
-            <!-- Systemic and Other Conditions -->
-            <div class="form-section">
-                <div class="section-title">Systemic and Other Conditions</div>
-                <div class="checkbox-group">
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="circulatory_system" name="circulatory_system" value="1">
-                        <label for="circulatory_system">Circulatory System</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="digestive_system" name="digestive_system" value="1">
-                        <label for="digestive_system">Digestive System</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="endocrine" name="endocrine" value="1">
-                        <label for="endocrine">Endocrine</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="eye_and_adnexa" name="eye_and_adnexa" value="1">
-                        <label for="eye_and_adnexa">Eye and Adnexa</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="genitourinary_system" name="genitourinary_system" value="1">
-                        <label for="genitourinary_system">Genitourinary System</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="infectious_and_parasitic" name="infectious_and_parasitic" value="1">
-                        <label for="infectious_and_parasitic">Infectious and Parasitic</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="mental" name="mental" value="1">
-                        <label for="mental">Mental</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="musculoskeletal_system" name="musculoskeletal_system" value="1">
-                        <label for="musculoskeletal_system">Musculoskeletal System</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="nervous_system" name="nervous_system" value="1">
-                        <label for="nervous_system">Nervous System</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="pregnancy" name="pregnancy" value="1">
-                        <label for="pregnancy">Pregnancy</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="respiratory_system" name="respiratory_system" value="1">
-                        <label for="respiratory_system">Respiratory System</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="skin" name="skin" value="1">
-                        <label for="skin">Skin</label>
-                    </div>
-                </div>
-            </div>
-            <div class="submit-section">
-                <button type="submit" class="btn-submit">Submit Medical Assessment</button>
-                <button type="reset" class="btn-reset">Reset Form</button>
-            </div>
-        </form>
     </div>
     <button id="myca-button"><i class="fa-regular fa-comment"></i></button>
 
