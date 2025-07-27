@@ -39,3 +39,6 @@ class TBController:
             return render_template('results.html', result=tb_result)
         except Exception as e:
             return f"Error: {str(e)}", 500
+    
+    def get_dashboard_data(self):
+        return jsonify(self.tb_model.get_dashboard_stats())

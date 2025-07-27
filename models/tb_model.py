@@ -120,3 +120,32 @@ class TBModel(TBInterface):
             return {}, 0.0
         except Error as e:
             return {}, 0.0
+        
+     # Overview Data
+    def get_dashboard_stats(self):
+        connection = self.db_connection.get_connection()
+        if not connection:
+            return {"totalPatients": 0, "tbCases": 0, "accuracy": "N/A"}
+
+        try:
+            cursor = connection.cursor(dictionary=True)
+
+            cursor.execute("SELECT COUNT(*) AS total_patients FROM tb_assessments")
+            total_patients = cursor.fetchone()['total_patients']
+
+            cursor.execute("SELECT COUNT(*) AS tb_cases FROM tb_assessments WHERE tuberculosis = 1")
+            tb_cases = cursor.fetchone()['tb_cases']
+
+            # Static value for now TO BE REPLACED
+            model_accuracy = "Null"
+
+            cursor.close()
+            connection.close()
+
+            return {
+                "totalPatients": total_patients,
+                "tbCases": tb_cases,
+                "accuracy": model_accuracy
+            }
+        except Error:
+            return {"totalPatients": 0, "tbCases": 0, "accuracy": "N/A"}

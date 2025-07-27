@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, session, redirect, url_for, request, render_template
 from flask_cors import CORS
 import os
+import pymysql
 import google.generativeai as genai
 from functools import wraps
 from controllers.student_controller import StudentController
@@ -113,6 +114,12 @@ def logout():
     session.clear()
     return redirect(url_for('home'))
 
+# Updates the Overview data
+@app.route('/api/dashboard_stats', methods=['GET'])
+@login_required
+def dashboard_stats():
+    return tb_controller.get_dashboard_data()
+
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
     if 'user_id' not in session or not session.get('logged_in'):
@@ -147,6 +154,26 @@ def medform_list():
 @app.route('/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'healthy', 'message': 'Flask API is running'}), 200
+
+# Get table data
+@app.route('/api/assessment_data', methods=['GET'])
+@login_required
+def get_assessment_data():
+    conn = pymysql.connect(
+        host='localhost',
+        user='root',
+        password='',
+        db='tb_finals',
+        cursorclass=pymysql.cursors.DictCursor
+    )
+
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM tb_assessments")
+            results = cursor.fetchall()
+        return jsonify(results)
+    finally:
+        conn.close()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=1234, debug=True)
