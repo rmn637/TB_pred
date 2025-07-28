@@ -4,7 +4,7 @@ from mysql.connector import Error
 from .interfaces.tb_model_interface import TBInterface
 import numpy as np
 from .predictive_models.activation_functions import ActivationFunctions
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
 
 class TBModel(TBInterface):
     def __init__(self, db_config):
@@ -41,6 +41,7 @@ class TBModel(TBInterface):
             medform_data = {k: (v if v not in [None, ''] else 0) for k, v in medform_data.items()}
             feature_keys = [k for k in medform_data.keys() if k not in ['id', 'tuberculosis']]
             features = [int(medform_data[k]) if str(medform_data[k]).isdigit() else 0 for k in feature_keys]
+            print(features)
 
             # Predict using custom neural network
             tb_pred = self.custom_nn_predict(features)
@@ -61,9 +62,12 @@ class TBModel(TBInterface):
             return False, f"Database error: {str(e)}", None, None
 
     def custom_nn_predict(self, X):
+        with open('models/predictive_models/scaler.pkl', 'rb') as f:
+            scaler = pickle.load(f)
         X = np.array(X, dtype=float).reshape(1, -1)
-        scaler = StandardScaler()
-        X = scaler.fit_transform(X)
+        x_scaled = X.copy()
+        x_scaled[:, :scaler.n_features_in_] = scaler.transform(X[:, :scaler.n_features_in_])
+
         h1_input = np.dot(X, self.weights_input_h1) + self.bias_h1
         h1_output = ActivationFunctions.relu(h1_input)
 
