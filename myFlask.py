@@ -116,7 +116,6 @@ def logout():
 
 # Updates the Overview data
 @app.route('/api/dashboard_stats', methods=['GET'])
-@login_required
 def dashboard_stats():
     return tb_controller.get_dashboard_data()
 
@@ -134,20 +133,17 @@ def med_form():
     return StudentView.render_med_form()
 
 @app.route('/submit_medical_form', methods=['POST'])
-@login_required
 def submit_medical_form():
     response = tb_controller.submit_medical_form()
     return response[0]
 
 @app.route('/result', methods=['GET'])
-@login_required
 def result():
     result = request.args.get('result')
     from views.tb_view import TBView
     return TBView.render_medical_form_result(tb_result=result)
 
 @app.route('/medform_list', methods=['GET'])
-@login_required
 def medform_list():
     return tb_controller.list_medforms()
 
@@ -157,13 +153,12 @@ def health_check():
 
 # Get table data
 @app.route('/api/assessment_data', methods=['GET'])
-@login_required
 def get_assessment_data():
     conn = pymysql.connect(
         host='localhost',
         user='root',
         password='',
-        db='tb_finals',
+        db='TB_Finals',
         cursorclass=pymysql.cursors.DictCursor
     )
 
