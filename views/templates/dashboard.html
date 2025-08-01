@@ -5,406 +5,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='myca.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --medical-primary: #059669;
-            --medical-primary-light: #10b981;
-            --medical-primary-dark: #047857;
-            --medical-light: #d1fae5;
-            --medical-subtle: #ecfdf5;
-            --text-primary: #064e3b;
-            --text-secondary: #065f46;
-            --background: #f0fdf4;
-            --white: #ffffff;
-            --border-color: #a7f3d0;
-            --shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.1);
-            --shadow-lg: 0 10px 15px -3px rgba(5, 150, 105, 0.15);
-            --medical-red: #dc2626;
-            --medical-orange: #ea580c;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            height: 100%;
-            width: 100%;
-            background: linear-gradient(135deg, var(--background) 0%, var(--medical-subtle) 100%);
-            color: var(--text-primary);
-            min-height: 100vh;
-            margin: 0;
-        }
-        .section {
-            display: none;
-        }
-        .section.active {
-            display: block;
-            width: 100%;
-        }
-        .overview_window{
-            display: flex;
-            height: 100%;
-            width: 100%;
-            align-items: center;
-        }
-        .visuals_window{
-            height: 100%;
-            width: 100%;
-        }
-        .icon-circle {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--medical-primary), var(--medical-primary-light));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 18px auto;
-            box-shadow: 0 4px 16px 0 rgba(5,150,105,0.10);
-        }
-        .icon-circle i {
-            color: #fff;
-            font-size: 2rem;
-        }
-        .main-container {
-            width: 100vw;
-            height: 100vh;
-            margin: 0;
-            background: var(--white);
-            border-radius: 0;
-            box-shadow: none;
-            padding: 0;
-            display: flex;
-            min-height: 100vh;
-        }
-        .sidebar {
-            width: 220px;
-            background: var(--medical-subtle);
-            border-right: 1.5px solid var(--medical-light);
-            border-radius: 16px 0 0 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-            padding: 32px 0 32px 0;
-            gap: 24px;
-        }
-        .sidebar .logo {
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: var(--medical-primary);
-            text-align: center;
-            margin-bottom: 18px;
-        }
-        .nav {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: stretch;
-            margin: 0 18px;
-        }
-        .nav button {
-            padding: 14px 0;
-            background: var(--medical-subtle);
-            border: 2px solid var(--medical-primary);
-            border-radius: 8px;
-            color: var(--medical-primary);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 4px;
-        }
-        .nav button.active, .nav button:hover {
-            background: var(--medical-primary);
-            color: white;
-        }
-        .logout-btn {
-            background: rgba(5,150,105,0.12);
-            border: none;
-            color: var(--medical-primary);
-            padding: 10px 0;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            margin: 0 18px;
-            margin-top: auto;
-            transition: background 0.2s, color 0.2s;
-            text-align: center;
-            text-decoration: none;
-        }
-        .logout-btn:hover {
-            background: var(--medical-primary);
-            color: white;
-        }
-        .content-area {
-            flex: 1;
-            padding: 40px 40px 30px 40px;
-            display: flex;
-            flex-direction: column;
-            max-width: 100%;
-            max-height: 100%;
-            box-sizing: border-box;
-            overflow: auto; 
-        }
-        .add-pred-btn {
-            display: block;
-            align-self: center;
-            width: 85%;
-            margin: 0 0 18px 0;
-            padding: 13px 0;
-            background: #10b981;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.08rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.18s;
-            text-align: center;
-        }
-        .add-pred-btn:hover, .add-pred-btn:focus {
-            background: #059669;
-        }
-        .dashboard-stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin: 30px auto 40px auto;
-            width: fit-content;
-        }
-        .stat-card {
-            background: var(--medical-subtle);
-            border: 1.5px solid var(--medical-light);
-            border-radius: 10px;
-            padding: 18px 32px;
-            text-align: center;
-            min-height: 100px;
-            min-width: 150px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 19px;
-        }
-        .stat-value {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--medical-primary);
-        }
-        .dashboard-images {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 24px;
-            justify-content: center;
-            margin: 40px 0 0 0;
-        }
-        .dashboard-images img {
-            background: #f8fafc;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(5,150,105,0.07);
-            max-width: 450px; /*450*/
-            width: 100%;
-            height: auto;
-            object-fit: contain;
-            padding: 10px;
-        }
-        .dashboard-cards {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 18px;
-        }
-        .dashboard-card {
-            background: var(--medical-subtle);
-            border: 1.5px solid var(--medical-light);
-            border-radius: 10px;
-            padding: 18px 12px;
-            text-align: center;
-        }
-        .dashboard-card .icon {
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-            color: var(--medical-primary);
-        }
-        .footer {
-            text-align: center;
-            margin-top: auto;
-            color: var(--text-secondary);
-            font-size: 13px;
-            margin-top: 10%;
-        }
-        @media (max-width: 900px) {
-        .main-container {
-            flex-direction: column;
-            width: 100vw;
-            height: auto;
-            min-height: 100vh;
-        }
-        .sidebar {
-            flex-direction: row;
-            width: 100vw;
-            height: auto;
-            border-radius: 0 0 0 0;
-            border-right: none;
-            border-bottom: 1.5px solid var(--medical-light);
-            padding: 12px 0;
-            gap: 10px;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .sidebar .logo {
-            margin-bottom: 0;
-            font-size: 22px;
-            padding-left: 12px;
-        }
-        .nav {
-            flex-direction: row;
-            margin: 0 8px;
-            gap: 6px;
-        }
-        .nav button, .add-pred-btn {
-            width: auto;
-            min-width: 100px;
-            font-size: 0.95rem;
-            padding: 10px 8px;
-        }
-        .logout-btn {
-            margin: 0 8px 0 0;
-            padding: 10px 8px;
-            font-size: 0.95rem;
-        }
-        .content-area {
-            padding: 16px 4vw 16px 4vw;
-        }
-        .dashboard-stats {
-            flex-direction: column;
-            gap: 18px;
-            align-items: stretch;
-        }
-        .dashboard-images {
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-        }
-    }
-    @media (max-width: 900px) {
-        .main-container {
-            flex-direction: column;
-            width: 100vw;
-            height: auto;
-            min-height: 100vh;
-        }
-        .sidebar {
-            flex-direction: row;
-            width: 100vw;
-            height: auto;
-            border-radius: 0 0 0 0;
-            border-right: none;
-            border-bottom: 1.5px solid var(--medical-light);
-            padding: 12px 0;
-            gap: 10px;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .sidebar .logo {
-            margin-bottom: 0;
-            font-size: 22px;
-            padding-left: 12px;
-        }
-        .nav {
-            flex-direction: row;
-            margin: 0 8px;
-            gap: 6px;
-        }
-        .nav button, .add-pred-btn {
-            width: 100px;
-            min-width: 100px;
-            font-size: 0.95rem;
-            padding: 10px 8px;
-        }
-        .logout-btn {
-            margin: 0 8px 0 0;
-            padding: 10px 8px;
-            font-size: 0.95rem;
-        }
-        .content-area {
-            padding: 16px 4vw 16px 4vw;
-        }
-        .dashboard-stats {
-            flex-direction: column;
-            gap: 18px;
-            align-items: stretch;
-        }
-        .dashboard-images {
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-        }
-    }
-    @media (max-width: 600px) {
-        .content-area {
-            padding: 8px 2vw 8px 2vw;
-        }
-        .sidebar .logo {
-            font-size: 18px;
-            padding-left: 4px;
-        }
-        .dashboard-stats .stat-card {
-            padding: 12px 8px;
-            font-size: 0.95rem;
-        }
-        .dashboard-images img {
-            max-width: 95vw;
-        }
-    }
-    .content-box{
-        display: block;
-        padding: 35px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-    }
-
-    .pie-linecharts{
-        display: flex;
-        box-sizing: border-box;
-        text-align: center;
-        max-height: max-content;
-        justify-content: space-around;
-    }
-    .pies{
-        display: flex;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-    }
-    .pchart{
-        width: 280px; 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: space-between;
-    }
-    .lchart{
-        width: 40em; 
-        display: flex;
-        flex-direction: column;
-    }
-    .bargraphs{
-        display: flex;
-        box-sizing: border-box;
-        justify-content: space-around;
-        margin-top: 20px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-        text-align: center;
-        padding: 10px;
-    }
-    .bchart{
-        width: 400px; 
-        margin-bottom: 5%;
-    }
-    .hider{
-        display: none;
-    }
-    </style>
 </head>
 <body>
     <div class="main-container">
@@ -509,7 +111,7 @@
                     <img src="{{ url_for('static', filename='images/ROCCurve.png') }}" alt="ROC Curve">
                     <div style="margin-bottom:32px;">
                         <h3>Classification Report</h3>
-                        <table style="width:100%; max-width:520px; margin:18px 0; border-collapse:collapse; font-size:1rem;">
+                        <table style="width:100%; max-width:100%; margin:18px 0; border-collapse:collapse; font-size:1rem;">
                             <thead>
                                 <tr style="background:var(--medical-light); color:var(--text-primary);">
                                     <th style="padding:8px 12px; text-align:left;">Class</th>
@@ -542,7 +144,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <div style="max-width:600px; color:var(--text-secondary); font-size:1rem;">
+                        <div style="max-width: 100%;color:var(--text-secondary);font-size:1rem;text-align: justify;">
                             <strong>Interpretation:</strong> The model achieves an overall accuracy of <b>73%</b>. For patients without TB (class 0), the model is more precise and has a higher F1-score than for those with TB (class 1). The recall for class 1 (0.68) means the model correctly identifies 68% of actual TB cases, but may miss some. The macro and weighted averages summarize performance across both classes. This report helps you understand the model's strengths and where it may need improvement, especially in detecting TB-positive cases.
                         </div>
                     </div>
@@ -551,38 +153,49 @@
             <!-- Dataset Analytics Section -->
             <div id="datasets" class="section">
                 <h2>Dataset Analytics</h2>
-                <div class="dashboard-images">
-                    <img src="{{ url_for('static', filename='images/ClassDistribution.png') }}" alt="Class Distribution">
-                    <img src="{{ url_for('static', filename='images/CorrelationMatrix.png') }}" alt="Correlation Matrix">
-                    <img src="{{ url_for('static', filename='images/InformationGainRanking.png') }}" alt="Information Gain Ranking">
-                    <div style="margin-bottom:32px;">
+                <div class="dashboard-top-row">
+                    <div class="dashboard-row">
+                    <div class="chart-left">
+                        <img src="/static/images/ClassDistribution.png" alt="Class Distribution">
+                    </div>
+                    <div class="chart-right">
+                        <img src="/static/images/InformationGainRanking.png" alt="Information Gain Ranking">
+                    </div>
+                    </div>
+                </div>
+                <div class="dashboard-bottom-row">
+                    <div class="chart-half">
+                        <img src="{{ url_for('static', filename='images/CorrelationMatrix.png') }}" alt="Correlation Matrix">
+                    </div>
+                    <div class="feature-table-card">
                         <h3>Top Features by Information Gain</h3>
-                        <table style="width:100%; max-width:420px; margin:18px 0; border-collapse:collapse; font-size:1rem;">
+                        <table>
                             <thead>
-                                <tr style="background:var(--medical-light); color:var(--text-primary);">
-                                    <th style="padding:8px 12px; text-align:left;">Feature</th>
-                                    <th style="padding:8px 12px; text-align:right;">Mutual Information</th>
+                                <tr>
+                                    <th>Feature</th>
+                                    <th style="text-align:right;">Mutual Information</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td style="padding:6px 12px;">age</td><td style="padding:6px 12px; text-align:right;">0.156</td></tr>
-                                <tr><td style="padding:6px 12px;">coughdur</td><td style="padding:6px 12px; text-align:right;">0.113</td></tr>
-                                <tr><td style="padding:6px 12px;">cough</td><td style="padding:6px 12px; text-align:right;">0.072</td></tr>
-                                <tr><td style="padding:6px 12px;">colddur</td><td style="padding:6px 12px; text-align:right;">0.033</td></tr>
-                                <tr><td style="padding:6px 12px;">feverdur</td><td style="padding:6px 12px; text-align:right;">0.022</td></tr>
-                                <tr><td style="padding:6px 12px;">dob</td><td style="padding:6px 12px; text-align:right;">0.014</td></tr>
-                                <tr><td style="padding:6px 12px;">sputum</td><td style="padding:6px 12px; text-align:right;">0.014</td></tr>
-                                <tr><td style="padding:6px 12px;">backpain</td><td style="padding:6px 12px; text-align:right;">0.009</td></tr>
-                                <tr><td style="padding:6px 12px;">jointpain</td><td style="padding:6px 12px; text-align:right;">0.009</td></tr>
-                                <tr><td style="padding:6px 12px;">chestpain</td><td style="padding:6px 12px; text-align:right;">0.008</td></tr>
+                                <tr><td>age</td><td style="text-align:right;">0.156</td></tr>
+                                <tr><td>coughdur</td><td style="text-align:right;">0.113</td></tr>
+                                <tr><td>cough</td><td style="text-align:right;">0.072</td></tr>
+                                <tr><td>colddur</td><td style="text-align:right;">0.033</td></tr>
+                                <tr><td>feverdur</td><td style="text-align:right;">0.022</td></tr>
+                                <tr><td>dob</td><td style="text-align:right;">0.014</td></tr>
+                                <tr><td>sputum</td><td style="text-align:right;">0.014</td></tr>
+                                <tr><td>backpain</td><td style="text-align:right;">0.009</td></tr>
+                                <tr><td>jointpain</td><td style="text-align:right;">0.009</td></tr>
+                                <tr><td>chestpain</td><td style="text-align:right;">0.008</td></tr>
                             </tbody>
                         </table>
-                        <div style="max-width:600px; color:var(--text-secondary); font-size:1rem;">
+                        <p class="feature-explanation">
                             <strong>Explanation:</strong> Information gain (mutual information) measures how much knowing a feature reduces uncertainty about the TB diagnosis. Features with higher values (like <b>age</b> and <b>cough duration</b>) are more informative for the model’s predictions. This ranking helps identify which patient data points are most important for accurate TB risk assessment.
-                        </div>
+                        </p>
                     </div>
                 </div>
             </div>
+
             <div class="footer">
                 Built with Flask, MySQL & Advanced ML Models
             </div>
