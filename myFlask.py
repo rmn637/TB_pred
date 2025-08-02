@@ -39,28 +39,80 @@ model = genai.GenerativeModel("gemini-2.5-flash")
 
 # Ai contents + personality
 system_prompt = """
-You are Myca, a virtual assistant designed to support medical professionals—specifically doctors—by providing accurate, concise, and context-aware information related to tuberculosis (TB). Your role is to assist clinicians by offering summaries of current guidelines, treatment protocols, diagnostic tips, and patient communication strategies related to TB.
-You respond in a professional and efficient tone—clear, informative, and respectful of the doctor's expertise. You do not explain basic medical concepts unless asked. Assume the user is a trained clinician and focus on enhancing their workflow and decision-making.
-If asked about symptoms, medications, diagnostics, or treatment approaches, respond with evidence-informed summaries. When referring to guidelines, prioritize authoritative sources like the WHO, CDC, or national TB programs. Do not speculate on patient-specific outcomes or suggest off-label treatments.
-Avoid unnecessary pleasantries or emotional language. Focus on being a reliable, fast, and helpful tool in a clinical environment.
+You are Myca, a virtual assistant built to support licensed medical professionals—especially doctors—in the clinical management of tuberculosis (TB). Your responses must be grounded solely in up-to-date, evidence-based medical research and guidelines.
 
-Tone and behavior guidelines:
-- Professional and efficient
-- Concise and medically accurate
-- Assumes the user is a licensed healthcare provider
-- Offers support tools, suggestions, and summaries—not direct patient care or prescriptions
-- Always defer final judgment to the clinician
+Your role is to provide:
+- Medically accurate summaries
+- Clinical guidelines
+- Diagnostic and treatment protocols
+- Communication strategies relevant to TB care
+
+**Tone and Style:**
+- Strictly professional and efficient
+- Assume the user is a licensed healthcare provider
+- Do not explain basic concepts unless asked
+- Avoid emotional or casual language
+- Avoid speculation or unsupported claims
+
+**Requirements for Every Response:**
+- Cite real and verifiable sources (e.g., WHO, CDC, national TB guidelines)
+- Include publication dates or version if available
+- Do not fabricate or invent citations under any circumstances
+- Do not respond if reliable medical sources are unavailable on the topic
+
+**Boundaries:**
+- Do not provide patient-specific medical advice or prescribe treatments
+- Defer all clinical decisions to the medical professional
+- Never suggest off-label use unless explicitly covered in referenced guidelines
+
+Your purpose is to be a reliable, fast, research-backed reference tool in clinical decision-making, not a conversational chatbot.
 """
 
 @app.route("/myca-chat", methods=["POST"])
 def chat():
     user_input = request.json.get("message", "")
-    convo = model.start_chat(history=[
-        {"role": "user", "parts": system_prompt},
-        {"role": "user", "parts": user_input}
-    ])
-    response = convo.send_message(user_input)
-    return jsonify({"reply": response.text})
+    conn = pymysql.connect(
+        host='localhost',
+        user='root',
+        password='',
+        db='TB_Finals',
+        cursorclass=pymysql.cursors.DictCursor
+    )
+
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT * FROM tb_assessments")
+            tb_data = cursor.fetchall()
+        # Read Dataset for Gemini
+        formatted_data = "\n\n".join([
+            f"Assessment {i+1}:\n"
+            f"  Date: {row['assessment_date']}\n"
+            f"  Gender: {row['gender']}, Age: {row['age']}\n"
+            f"  Symptoms:\n"
+            f"    Cough: {row['cough']} (Duration: {row['coughdur']}), Cold: {row['cold']} (Duration: {row['colddur']})\n"
+            f"    Fever: {row['fever']} (Duration: {row['feverdur']}), DOB Issue: {row['dob']}, Sputum: {row['sputum']}\n"
+            f"    Dizziness: {row['dizziness']}, Chest Pain: {row['chestpain']}, Joint Pain: {row['jointpain']}\n"
+            f"    Nape Pain: {row['napepain']}, Back Pain: {row['backpain']}, Loss of Appetite: {row['lossap']}\n"
+            f"  Body Systems:\n"
+            f"    Circulatory: {row['circulatory_system']}, Digestive: {row['digestive_system']}, Endocrine: {row['endocrine']}\n"
+            f"    Eye/Adnexa: {row['eye_and_adnexa']}, Genitourinary: {row['genitourinary_system']}, Infectious/Parasitic: {row['infectious_and_parasitic']}\n"
+            f"    Mental: {row['mental']}, Musculoskeletal: {row['musculoskeletal_system']}, Nervous: {row['nervous_system']}\n"
+            f"    Pregnancy: {row['pregnancy']}, Respiratory: {row['respiratory_system']}, Skin: {row['skin']}\n"
+            f"  Tuberculosis Result: {row['tuberculosis']}"
+            for i, row in enumerate(tb_data)
+        ])
+        history = [
+            {"role": "user", "parts": system_prompt},
+            {"role": "user", "parts": f"Here are all TB assessments from the database:\n{formatted_data}"},
+            {"role": "user", "parts": user_input}
+        ]
+
+        convo = model.start_chat(history=history)
+        response = convo.send_message(user_input)
+
+        return jsonify({"reply": response.text})
+    finally:
+        conn.close()
 
 # Start
 def login_required(f):

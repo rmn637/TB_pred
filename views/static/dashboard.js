@@ -296,9 +296,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 type: 'bar',
                 data: {
                     labels: Object.keys(ageGroups),
-                    datasets: [{ label: 'TB Cases', data: Object.values(ageGroups), backgroundColor: '#ff6384' }]
+                    datasets: [{
+                        label: 'TB Cases',
+                        data: Object.values(ageGroups).map(v => parseInt(v)),
+                        backgroundColor: '#ff6384'
+                    }]
                 },
-                options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: value => Number.isInteger(value) ? value : null
+                            }
+                        }
+                    }
+                }
             });
 
             // Bar: Symptoms
@@ -306,19 +320,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 type: 'bar',
                 data: {
                     labels: symptomFields.map(s => s.charAt(0).toUpperCase() + s.slice(1)),
-                    datasets: [{ label: 'Reported in TB Cases', data: Object.values(symptomCounts), backgroundColor: '#e9c604ff' }]
+                    datasets: [{
+                        label: 'Reported in TB Cases',
+                        data: Object.values(symptomCounts).map(v => parseInt(v)),
+                        backgroundColor: '#e9c604ff'
+                    }]
                 },
-                options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: value => Number.isInteger(value) ? value : null
+                            }
+                        }
+                    }
+                }
             });
 
             // Bar: Systems
             new Chart(document.getElementById('systemChart'), {
                 type: 'bar',
                 data: {
-                    labels: systemFields.map(s => s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())),
-                    datasets: [{ label: 'TB Involvement', data: Object.values(systemCounts), backgroundColor: '#ff6384' }]
+                    labels: systemFields.map(s =>
+                        s.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+                    ),
+                    datasets: [{
+                        label: 'TB Involvement',
+                        data: Object.values(systemCounts).map(v => parseInt(v)),
+                        backgroundColor: '#ff6384'
+                    }]
                 },
-                options: { responsive: true, scales: { y: { beginAtZero: true } } }
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: value => Number.isInteger(value) ? value : null
+                            }
+                        }
+                    }
+                }
             });
 
             // Line: Age vs TB Likelihood
